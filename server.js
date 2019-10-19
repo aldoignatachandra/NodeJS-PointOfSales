@@ -26,5 +26,3 @@ server.use (bodyParser.urlencoded ({extended: false}));
 server.use ('/api', Router);
 
 module.exports = server;
-
-//Server
