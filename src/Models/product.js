@@ -1,49 +1,46 @@
 const connection = require ('../Configs/connection');
 const feature = require ('../Helpers/feature');
+const { getMaxPage } = require('../Helpers/feature');
+const { searchProduct } = require('../Helpers/feature');
+const { sortBy } = require('../Helpers/feature');
 
 const model = {
-    getProduct: (req) => {
+    getProduct: (req, page) => {
 
-        let sql = "SELECT * FROM tb_product";
-        const page = feature.pagination (req);
-        const sorting = feature.sortBy (req);
-        const search = req.query.search;
+        let sql = `SELECT product.id, product.name as product_name, product.description, product.image,
+                   category.name as category, product.price, product.added, product.updated, product.quantity 
+                   FROM tb_product as product, tb_category as category WHERE product.category_id = category.id `;
+
+        const query = searchProduct(req, sql);
+        sql = sortBy(req, query.sql);
+        const paging = `${sql} LIMIT ? OFFSET ?`;
 
         return new Promise ((resolve, reject) => {
-
-            //Add Search Query
-            if (search != null) {
-                sql += ' WHERE name LIKE ?';
-            } else {
-                sql;
-            }
-            
-            //Add SortBy Query
-            if ((sorting.sortBy || sorting.orderBy) != null) {
-                sql += sorting.sql;
-            } 
-
-            //Add Pagination Query
-            const paging = `${sql} LIMIT ? OFFSET ?`;
-
-            //Check Using Search Or Not
-            if (search == null) {
-                connection.query (paging, [page.item, page.offset], (err, response) => {
-                    if (!err) {
-                        resolve (response)
-                    } else {
-                        reject (err);
+            getMaxPage(page, query.search, "tb_product")
+            .then (maxPage => {
+                const infoPage = {
+                    currentPage: page.page,
+                    totalAllProduct: maxPage.total,
+                    maxPage: maxPage.maxPage
+                };
+    
+                connection.query(paging,
+                    query.search == null ? [page.item, page.offset] : ['%' + query.search + '%', page.item, page.offset],
+                    (err, response) => {
+                        if (!err) {
+                            resolve ({
+                                infoPage,
+                                response
+                            });
+                        }
+                        else {
+                            reject (err);
+                        }
                     }
-                })
-            } else {
-                connection.query (paging, ['%' + search + '%', page.item, page.offset], (err, response) => {
-                    if (!err) {
-                        resolve (response)
-                    } else {
-                        reject (err);
-                    }
-                });
-            }
+                );
+            }).catch(err => {
+                reject(err)
+            });
         });
     },
     getProductById: req => {

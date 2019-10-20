@@ -1,21 +1,31 @@
 const connection = require ('../Configs/connection');
-const feature = require ('../Helpers/feature');
+const { getMaxPage } = require('../Helpers/feature');
 
 const model = {
-    getCategory: (req) => {
+    getCategory: (req, page) => {
 
-        const page = feature.pagination (req);
         const sql = 'SELECT * FROM tb_category';
         const paging = `${sql} LIMIT ? OFFSET ?`;
 
         return new Promise ((resolve, reject) => {
-            connection.query (paging, [page.item, page.offset], (err, response) => {
-                if (!err) {
-                    resolve (response);
-                } else {
-                    reject (err);
-                }
-            });
+            getMaxPage (page, null, "tb_category")
+            .then (maxPage => {
+                const infoPage = {
+                    currentPage: page.page,
+                    totalAllCategories: maxPage.total,
+                    maxPage: maxPage.maxPage
+                };
+                connection.query (paging, [page.item, page.offset], (err, response) => {
+                    if (!err) {
+                        resolve ({infoPage, response});
+                    } else {
+                        reject (err);
+                    }
+                });
+            })
+            .catch (error => {
+                reject(error);
+            })
         });
     },
     getCategoryById: req => {

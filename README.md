@@ -11,7 +11,7 @@ There're some features included in the API which allow users to programmatically
 This documentation outlines the Point of Sales APP API functionality.
 
 ## Built With
-[![Express.js](https://img.shields.io/badge/express-4.17.1-yellow?style=rounded-square)](https://expressjs.com/en/starter/installing.html) [![Node.js](https://img.shields.io/badge/npm-6.9.0-greenstyle?rounded-square)](https://nodejs.org/) [![MySQL](https://img.shields.io/badge/mysql-2.17.1-blue?rounded-square)](https://www.npmjs.com/search?q=mysql) [![MySQL](https://img.shields.io/badge/body--parser-1.19.0-red?rounded-square)](https://www.npmjs.com/package/body-parser)
+[![Node.js](https://img.shields.io/badge/Node.js-v.10.16.2-green.svg?style=flat-square&logo=appveyor)](https://nodejs.org/) [![Express.js](https://img.shields.io/badge/Express.js-4.x-orange.svg?style=flat-square&logo=appveyor)](https://expressjs.com/en/starter/installing.html) [![MySQL](https://img.shields.io/badge/mysql-v2.17.1-blue?style=flat-square&logo=appveyor)](https://www.npmjs.com/package/mysql) [![body-parser](https://img.shields.io/badge/body--parser-v1.19.0-red?style=flat-square&logo=appveyor)](https://www.npmjs.com/package/body-parser) [![morgan](https://img.shields.io/badge/morgan-v1.9.1-success?style=flat-square&logo=appveyor)](https://www.npmjs.com/package/body-parser) [![dotenv](https://img.shields.io/badge/dotenv-v1.9.1-black?style=flat-square&logo=appveyor)](https://www.npmjs.com/package/dotenv) [![cors](https://img.shields.io/badge/cors-v2.8.5-blueviolet?style=flat-square&logo=appveyor)](https://www.npmjs.com/package/cors) [![jsonwebtoken](https://img.shields.io/badge/jsonwebtoken-v8.5.1-blue?style=flat-square&logo=appveyor)](https://www.npmjs.com/package/jsonwebtoken)
 
 ## Requirements
 
@@ -22,7 +22,7 @@ This documentation outlines the Point of Sales APP API functionality.
 
 ## Getting Started
 
-![node.js](https://www.javatpoint.com/js/nodejs/images/node-js-tutorial.png)
+<a href="https://nodejs.org/en/about/">![node.js](https://www.javatpoint.com/js/nodejs/images/node-js-tutorial.png)</a>
 
 ### Node.js
 Node.js is an open-source, cross-platform JavaScript run-time environment that executes JavaScript code outside of a browser.
@@ -33,14 +33,14 @@ Nodejs was written in 2009 by Ryan Dahl, 13 years after the introduction of firs
 
 The initial release of Nodejs in 2009 supported only Linux and Mac OS X. Later in July 2011, the first Nodejs build supporting Windows was released.
 
-![express](https://expressjs.com/images/express-facebook-share.png)
+<a href="https://expressjs.com/">![express](https://expressjs.com/images/express-facebook-share.png)</a>
 
 ### Express.js
 Express.js, or simply Express, is a web application framework for Node.js, released as free and open-source software under the MIT License. It is designed for building web applications and APIs. It has been called the de facto standard server framework for Node.js.
 
 The philosophy of Expressjs is to provide a small and robust tooling for HTTP servers. Making it a great solution for single page apps, website, hybrids, or public HTTP APIs. 
 
-![restful api](https://s3.amazonaws.com/kinlane-productions/salesforce/salesforce-rest-api.png)
+<a href="https://restfulapi.net/">![restful api](https://s3.amazonaws.com/kinlane-productions/salesforce/salesforce-rest-api.png)</a>
 
 ### RESTFul API
 A RESTful API is an application program interface (API) that uses HTTP requests to GET, PUT, POST and DELETE data.
@@ -87,13 +87,15 @@ Each response will be returned with one of the following HTTP status codes:
 2.   `npm install`  to install node.js in CMD / Terminal
 3.   `npm install express body-parser mysql` to install dependencies
 4.   `npm install dotenv`
-5.  If you don't understand about .env read [dotenv](https://www.npmjs.com/package/dotenv)
-6. Make a new file **.env**
-7. Turn on Web Server and MySQL, (Also can be done with third-party tools like XAMPP, WAMP, etc)
-8. Setup the database.
-9. Open **Postman** desktop application or Chrome web extension (Install **Postman** if you haven't yet)
-10. Choose HTTP Method and enter the request URL.(i.e. localhost:3000/product)
-11. Check all **Endpoints**
+5.   `npm install jsonwebtoken`
+6.   `npm install bcrypt`  
+7.  If you don't understand about .env read [dotenv](https://www.npmjs.com/package/dotenv)
+8. Make a new file **.env**
+9. Turn on Web Server and MySQL, (Also can be done with third-party tools like XAMPP, WAMP, etc)
+10. Setup the database.
+11. Open **Postman** desktop application or Chrome web extension (Install **Postman** if you haven't yet)
+12. Choose HTTP Method and enter the request URL.(i.e. localhost:3000/product)
+13. Check all **Endpoints**
 
 ## Setup .env file
 Open **.env** file on code editor and copy the code below :
@@ -105,6 +107,8 @@ DB_HOST = 'localhost'
 DB_USER = 'root'
 DB_PASSWORD = ''
 DB_NAME = 'db_sales'
+PORT = 3000
+SECRET_KEY = 170797
 ```
 
 ## Setup Database
@@ -193,6 +197,17 @@ AFTER INSERT ON  tb_order
     END
 END
 ```
+
+Create Table named **tb_user** :
+```
+CREATE TABLE 'tb_user' (
+    id INT(55) AUTO_INCREMENT PRIMARY KEY,
+    username TEXT,
+    password TEXT,
+    role TEXT
+);
+```
+
 ### HTTP Requests
 
 All API requests are made by sending a secure HTTPS request using one of the following methods, depending on the action being taken:
@@ -207,7 +222,64 @@ All API requests are made by sending a secure HTTPS request using one of the fol
 | :---- | :------------------- | :---------------------------------------------------------------------------------- |
 | `200` | `Succes`                 | The request was successful                                                          |
 | `400` | `Error`        | There was a problem with the request    |
+
 ## Endpoints
+**IMPORTANT!** All endpoint except **Login** and **Register** must have **header** :
+
+- **Content-Type** : **`application/json`**
+- **x-access-token**: **`token`**
+
+#### **Homepage**
+
+- **Request** : **`GET api/`**
+- **Response** :
+
+    ```
+    {
+        message: "Welcome to Point Of Sales RESTful API using nodeJS, ExpressJS and MySql, You can read the documentation at README.md",
+        author: "Aldo Ignata Chandra",
+        email: "aldoignatachandra@gmail.com",
+        github: "github.com/aldoignatachandra"
+    }
+    ```
+
+#### **User**
+* **Register user**
+  - **Request** : **`POST api/user/register`**
+    ```
+    {
+        "username": "aldoignata",
+        "password": "Dragonking7",
+        "user_role": "administrator"
+    }
+    ```
+  - **Response** : 
+    ```
+    {
+        "status": 200,
+        "result": "User created successfully"
+    }
+    ```
+* **Login User**
+  - **Request** : **`POST api/user/login`**
+    ```
+    {
+        "username": "aldoignata",
+        "password": "Dragonking7"
+    }
+    ```
+  - **Response** : 
+    ```
+    {
+        "status": 200,
+        "result": {
+            "user_id": 1,
+            "username": "aldoignata",
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTcxNTc0NjQzLCJleHAiOjE1NzE1NzgyNDN9.kFg30GeRkWyT4JjOYNauxtdfQdhhxbuTQrRjXaDK7rA"
+        }
+    }
+    ```
+
 ### A. CRUD Category Endpoint
 **1. Read All Category**
  -   **Request**  :  **`GET api/category`**
@@ -380,11 +452,13 @@ All API requests are made by sending a secure HTTPS request using one of the fol
 ```
 ###  C. Search, Pagination, Sort in Product
 
- - **Search by name** `` Request : GET /product/?search=nasi ``
- - **Pagination in product** `` Request : GET product/?page=1&content=4 ``
- - **Sort name** `` Request : GET product/?order=name&sort=DESC ``
- - **Sort category** `` Request : GET product/?order=category&sort=ASC``
- - **Sort date update** `` Request : GET product/?order=date_update&sort=DESC ``
+| Feature                        | Request                                                       |
+| :-----------------             | :------------------------------------------------------------ |
+| `Search by name`               |  `` Request : GET /product/?search=nasi ``                    |
+| `Pagination in product`        |  `` Request : GET product/?page=1&content=4 ``                |
+| `Sort product by name`         |  `` Request : GET product/?order=name&sort=DESC ``            |
+| `Sort product by category`     |  `` Request : GET product/?order=category&sort=ASC ``         |
+| `Sort product by date update`  |  `` Request : GET product/?order=date_update&sort=DESC ``     |
 
 ### Add / Reduce Product Order Below 0
 **1. Add product**

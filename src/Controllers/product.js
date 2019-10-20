@@ -1,12 +1,14 @@
 const productModel = require ('../Models/product');
 const form = require('../Helpers/response');
+const { pagination } = require('../Helpers/feature');
 
 const controller = {
     //Controller Get All Product
     getProduct: (req, res) => {
-        productModel.getProduct(req)
+        const page = pagination(req);
+        productModel.getProduct(req, page)
         .then (response => {
-            if (response.length > 0) {
+            if (response.length != 0) {
                 form.success (res, 200, response);
             } else {
                 form.error (res, 400, "Cannot Found Product");

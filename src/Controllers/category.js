@@ -1,13 +1,15 @@
 const categoryModel = require ('../Models/category');
 const productModel = require ('../Models/product');
 const form = require('../Helpers/response');
+const { pagination } = require('../Helpers/feature');
 
 const controller = {
     //Controller Get All Category
     getCategory: (req, res) => {
-        categoryModel.getCategory (req)
+        const page = pagination(req);
+        categoryModel.getCategory (req, page)
         .then (response => {
-            if (response.length > 0) {
+            if (response.length != 0) {
                 form.success (res, 200, response);
             } else {
                 form.error (res, 400, "Table Category Is Empty");
