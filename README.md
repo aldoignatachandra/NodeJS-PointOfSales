@@ -122,7 +122,7 @@ CREATE DATABASE db_sales;
 
 Create Table named **tb_category** :
 ```
-CREATE TABLE 'tb_category' (
+CREATE TABLE tb_category (
     id INT(55) AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
