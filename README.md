@@ -131,7 +131,7 @@ CREATE TABLE 'tb_category' (
 ```
 Create Table named **tb_product** :
 ```
-CREATE TABLE 'tb_product' (
+CREATE TABLE tb_product (
     id INT(55) AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     description VARCHAR(255),
@@ -145,21 +145,21 @@ CREATE TABLE 'tb_product' (
 ```
 Create Table named **tb_stock** :
 ```
-CREATE TABLE 'tb_stock' (
+CREATE TABLE tb_stock (
     id INT(55) AUTO_INCREMENT PRIMARY KEY,
     product_id INT(55),
     addQuantity INT(55),
-    date_added NOT NULL DEFAULT CURRENT_TIMESTAMP
+    date_added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ```
 Create Table named **tb_order** :
 ```
-CREATE TABLE 'tb_order' (
+CREATE TABLE tb_order (
     id INT(55) AUTO_INCREMENT PRIMARY KEY,
     order_list INT(55),
     product_id INT(55),
     quantity INT(55),
-    time_addTIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    time_add TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ```
 Create Trigger **add_Stock**
@@ -200,7 +200,8 @@ END
 
 Create Table named **tb_user** :
 ```
-CREATE TABLE 'tb_user' (
+CREATE TABLE tb_user
+(
     id INT(55) AUTO_INCREMENT PRIMARY KEY,
     username TEXT,
     password TEXT,
