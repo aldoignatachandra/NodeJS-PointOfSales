@@ -8,6 +8,7 @@ const Authorization = require ('../Helpers/userAuth');
 
 const Router = express.Router ();
 
+//Message
 Router.get('/', (req, res) => {
     res.json ({
         message: "Welcome to Point Of Sales RESTful API using nodeJS, ExpressJS and MySql, You can read the documentation at README.md",
@@ -18,9 +19,9 @@ Router.get('/', (req, res) => {
 })
 
 //Endpoint Router
-Router.use ('/category', Authorization.userAuth, category);
-Router.use ('/product', Authorization.userAuth, product);
-Router.use ('/transaction', Authorization.userAuth, transaction);
+Router.use ('/category' /*, Authorization.userAuth*/, category);
+Router.use ('/product' /*, Authorization.userAuth*/, product);
+Router.use ('/transaction' /*, Authorization.userAuth*/, transaction);
 Router.use('/user', user);
 
 module.exports = Router;

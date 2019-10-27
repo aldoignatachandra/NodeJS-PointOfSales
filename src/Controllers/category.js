@@ -1,5 +1,4 @@
 const categoryModel = require ('../Models/category');
-const productModel = require ('../Models/product');
 const form = require('../Helpers/response');
 const { pagination } = require('../Helpers/feature');
 
@@ -23,7 +22,7 @@ const controller = {
     getCategoryById: (req, res) => {
         categoryModel.getCategoryById (req)
         .then (response => {
-            if (response.length > 0) {
+            if (response.length != 0) {
                 form.success (res, 200, response);
             } else {
                 form.error (res, 400, "Category ID Not Found");
@@ -35,24 +34,56 @@ const controller = {
     },
     //Controller Post Category
     postCategory: (req, res) => {
-        categoryModel.postCategory (req)
-        .then (response => {
-            form.success (res, 200, response);
+
+        //Cannot Post Empty Category Name
+        if (req.body.name == null || req.body.name == "") {
+            return form.error (res, 400, "Category Name Cant Be Empty");
+        }
+
+        categoryModel.getCategoryByName (req)
+        .then(response => {
+            if (response.length == 0) {
+                categoryModel.postCategory (req)
+                .then (response => {
+                    form.success (res, 200, "Success Create New Category");
+                })
+                .catch (error => {
+                    form.error (res, 400, error);
+                })
+            } else {
+                form.error (res, 400, "Category Name Already Exist");
+            }
         })
-        .catch (error => {
+        .catch(error => {
             form.error (res, 400, error);
         })
     },
     //Controller Update Category
     updateCategory: (req, res) => {
+
+        //Check If Category Empty
+        if (req.body.name == null || req.body.name == "") {
+            return form.error (res, 400, "Category Name Cant Be Empty");
+        }
+
         categoryModel.getCategoryById (req)
         .then(response => {
-            if (response.length > 0) {
-                categoryModel.updateCategory (req)
-                .then (response => {
-                    form.success (res, 200, response);
+            if (response.length != 0) {
+                categoryModel.getCategoryByName (req)
+                .then(response => {
+                    if (response.length == 0) {
+                        categoryModel.updateCategory (req)
+                        .then (response => {
+                            form.success (res, 200, "Success Update Category");
+                        })
+                        .catch (error => {
+                            form.error (res, 400, error);
+                        })
+                    } else {
+                        form.error (res, 400, "Category Name Is Exist");
+                    }
                 })
-                .catch (error => {
+                .catch(error => {
                     form.error (res, 400, error);
                 })
             } else {
@@ -66,19 +97,21 @@ const controller = {
     deleteCategory: (req, res) => {
         categoryModel.getCategoryById (req)
         .then(response => {
-            if (response.length > 0) {
-                productModel.getProductById (req)
+            console.log(response);
+            if (response.length != 0) {
+                categoryModel.checkCategoryId (req)
                 .then(response => {
+                    console.log(response);
                     if (response.length == 0) {
                         categoryModel.deleteCategory (req)
                         .then (response => {
-                            form.success (res, 200, response);
+                            form.success (res, 200, "Success Delete Category");
                         })
                         .catch (error => {
                             form.error (res, 400, error);
                         })
                     } else {
-                        form.error (res, 400, "Category ID is being used in the product table");
+                        form.error (res, 400, "Category ID is being used By one or more product");
                     }
                 })
                 .catch(error => {

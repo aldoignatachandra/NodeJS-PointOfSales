@@ -1,4 +1,5 @@
 const productModel = require ('../Models/product');
+const categoryModel = require ('../Models/category');
 const form = require('../Helpers/response');
 const { pagination } = require('../Helpers/feature');
 
@@ -35,18 +36,36 @@ const controller = {
     },
     //Controller Post New Product
     postProduct: (req, res) => {
-        productModel.getProductById(req)
+
+        //Chek All Field
+        if (req.body.name == null || req.body.name == "") {return form.error (res, 400, "Category Name Cant Be Empty")}
+        if (req.body.description == null || req.body.description == "") {return form.error (res, 400, "Description Cant Be Empty")}
+        if (req.body.image == null || req.body.image == "") {return form.error (res, 400, "Image Cant Be Empty")}
+        if (req.body.price < 0 ) {return form.error (res, 400, "Price Cannot Down Below 0")}
+        if (req.body.quantity < 0 ) {return form.error (res, 400, "Quantity Cannot Down Below 0")}
+
+        categoryModel.getCategoryById(req)
         .then (response => {
-            if (response.length > 0) {
-                productModel.postProduct (req)
-                .then (response => {
-                    form.success (res, 200, response);
+            if (response.length != 0) {
+                productModel.getProductByName(req)
+                .then(response =>{
+                    if (response.length == 0) {
+                        productModel.postProduct (req)
+                        .then (response => {
+                            form.success (res, 200, "Success Add New Product");
+                        })
+                        .catch (error => {
+                            form.error (res, 400, error);
+                        })
+                    } else {
+                        form.error (res, 400, "Product Name Is Already Exist");
+                    }
                 })
-                .catch (error => {
+                .catch(error => {
                     form.error (res, 400, error);
                 })
             } else {
-                form.error (res, 400, "ID Product Not Found");
+                form.error (res, 400, "ID Category Not Found");
             }
         })
         .catch (error => {
@@ -55,14 +74,42 @@ const controller = {
     },
     //Controller Update Product By Id
     updateProduct: (req, res) => {
+
+        //Chek All Field
+        if (req.body.name == null || req.body.name == "") {return form.error (res, 400, "Category Name Cant Be Empty")}
+        if (req.body.description == null || req.body.description == "") {return form.error (res, 400, "Description Cant Be Empty")}
+        if (req.body.image == null || req.body.image == "") {return form.error (res, 400, "Image Cant Be Empty")}
+        if (req.body.price < 0 ) {return form.error (res, 400, "Price Cannot Down Below 0")}
+        if (req.body.quantity < 0 ) {return form.error (res, 400, "Quantity Cannot Down Below 0")}
+
         productModel.getProductById (req)
         .then (response => {
-            if (response.length > 0) {
-                productModel.updateProduct (req)
-                .then (response => {
-                    form.success (res, 200, response);
+            if (response.length != 0) {
+                productModel.getProductByName (req)
+                .then(response => {
+                    if (response.length == 0) {
+                        productModel.checkCategory (req)
+                        .then(response => {
+                            if (response.length != 0) {
+                                productModel.updateProduct (req)
+                                .then (response => {
+                                    form.success (res, 200, "Success Update Product");
+                                })
+                                .catch (error => {
+                                    form.error (res, 400, error);
+                                })
+                            } else {
+                                form.error (res, 400, "Category Id Not Found");
+                            }
+                        })
+                        .catch(error => {
+                            form.error (res, 400, error);
+                        })
+                    } else {
+                        form.error (res, 400, "Product Name Already Exist");
+                    }
                 })
-                .catch (error => {
+                .catch(error => {
                     form.error (res, 400, error);
                 })
             } else {
@@ -80,8 +127,7 @@ const controller = {
             if (response.length > 0) {
                 productModel.deleteProduct (req)
                 .then (response => {
-                    form.success (res, 200, response);
-                    console.log (response);
+                    form.success (res, 200, "Success Delete Product");
                 })
                 .catch (error => {
                     form.error (res, 400, error);

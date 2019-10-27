@@ -1,5 +1,6 @@
 require ('dotenv/config');
 
+//Dependencies
 const express = require ('express');
 const logger = require ('morgan');
 const bodyParser = require ('body-parser');
@@ -11,7 +12,7 @@ const server = express ();
 const port = process.env.PORT;
 const nodeEnv = 'Development';
 
-//Public Allowe CORS
+//Public Allow CORS
 server.use (cors());
 
 server.listen (port , () => {

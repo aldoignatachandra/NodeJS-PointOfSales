@@ -55,7 +55,7 @@ const controller = {
         .then (response => {
             if (response.length > 0) {
                 if (bcrypt.compareSync (req.body.password, response[0].password)) {
-                    const token = jwt.sign ({ id : response[0].id }, secretKey, { expiresIn: '1h' });
+                    const token = jwt.sign ({ id : response[0].id }, secretKey, { expiresIn: '7h' });
                     form.success (res, 200, {user_id: response[0].id, username: response[0].username, token: token})
                 } else {
                     form.error (res, 400, "Password Incorrect");
