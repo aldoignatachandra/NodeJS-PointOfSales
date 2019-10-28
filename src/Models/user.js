@@ -35,6 +35,21 @@ const model = {
                 }  
             });
         });
+    },
+    checkUsername: (req) => {
+
+        const sql = 'SELECT username FROM tb_user WHERE username = ?'
+        const value = [req.body.username]
+
+        return new Promise((resolve, reject) => {
+            connection.query(sql, value, (err, result) => {
+                if (!err) {
+                    resolve(result);
+                } else {
+                    reject(err);
+                }  
+            });
+        });
     }  
 };
 

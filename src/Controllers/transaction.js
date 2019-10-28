@@ -1,6 +1,7 @@
 const transactionModel = require ('../Models/transaction');
 const form = require('../Helpers/response');
 
+//Recursive Function
 const addOrder = (req, res) => {
     transactionModel.getOrderList (req)
     .then(response => {
@@ -22,17 +23,6 @@ const addOrder = (req, res) => {
 }
 
 const controller = {
-    //Controller Add Stock
-    addStock: (req, res) => {
-        transactionModel.addStock (req)
-        .then (response => {
-            form.success (res, 200, response);
-        })
-        .catch (error => {
-            form.error (res, 400, error);
-            console.log (400);
-        })
-    },
     //Controller Get All Stock Data
     getAddStockData: (req, res) => {
         transactionModel.getAddStockData ()
@@ -59,6 +49,17 @@ const controller = {
         })
         .catch (error => {
             form.error (res, 400, error);
+        })
+    },
+    //Controller Add Stock
+    addStock: (req, res) => {
+        transactionModel.addStock (req)
+        .then (response => {
+            form.success (res, 200, response);
+        })
+        .catch (error => {
+            form.error (res, 400, error);
+            console.log (400);
         })
     },
     //Controller Get All Order Data

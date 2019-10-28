@@ -19,9 +19,9 @@ Router.get('/', (req, res) => {
 })
 
 //Endpoint Router
-Router.use ('/category' /*, Authorization.userAuth*/, category);
-Router.use ('/product' /*, Authorization.userAuth*/, product);
-Router.use ('/transaction' /*, Authorization.userAuth*/, transaction);
+Router.use ('/category', Authorization.userAuth, category);
+Router.use ('/product', Authorization.userAuth, product);
+Router.use ('/transaction', Authorization.userAuth, transaction);
 Router.use('/user', user);
 
 module.exports = Router;

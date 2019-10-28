@@ -38,11 +38,21 @@ const controller = {
             return form.error (res, 400, "User role can't be empty");
         }
 
-        modelUser.registerUser(req)
-        .then (response => {
-            form.success (res, 200, "User created successfully");
+        modelUser.checkUsername (req)
+        .then(response => {
+            if (response.length == 0) {
+                modelUser.registerUser(req)
+                .then (response => {
+                    form.success (res, 200, "User created successfully");
+                })
+                .catch (error => {
+                    form.error (res, 400, error);
+                })
+            } else {
+                form.error (res, 400, "Username Already Exist");
+            }
         })
-        .catch (error => {
+        .catch(error => {
             form.error (res, 400, error);
         })
     },
@@ -53,7 +63,7 @@ const controller = {
 
         modelUser.loginUser (req)
         .then (response => {
-            if (response.length > 0) {
+            if (response.length != 0) {
                 if (bcrypt.compareSync (req.body.password, response[0].password)) {
                     const token = jwt.sign ({ id : response[0].id }, secretKey, { expiresIn: '7h' });
                     form.success (res, 200, {user_id: response[0].id, username: response[0].username, token: token})
@@ -65,7 +75,7 @@ const controller = {
             }
         })
         .catch (error => {
-            form.error (res, 400, error);
+            form.error (res, 400, error)
         })
     }
 }
