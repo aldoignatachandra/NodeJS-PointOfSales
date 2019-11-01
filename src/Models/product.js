@@ -1,13 +1,13 @@
 const connection = require ('../Configs/connection');
 const { getMaxPage } = require('../Helpers/feature');
 const { searchProduct } = require('../Helpers/feature');
-const { sortBy } = require('../Helpers/feature');
+const { sorting } = require('../Helpers/feature');
 
 const model = {
     getProduct: (req, page) => {
         let sql = `SELECT product.id, category.id as category_id ,product.name as product_name, product.description, product.image,category.name as category, product.price, product.added, product.updated, product.quantity FROM tb_product as product, tb_category as category WHERE product.category_id = category.id `;
-        const query = searchProduct(req, sql);
-        sql = sortBy(req, query.sql);
+        let query = searchProduct(req, sql);
+        sql = sorting(req, query.sql);
         const paging = `${sql} LIMIT ? OFFSET ?`;
 
         return new Promise ((resolve, reject) => {

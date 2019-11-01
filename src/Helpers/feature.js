@@ -32,24 +32,24 @@ module.exports.getMaxPage = (page, keyword, table) => {
 }
 
 //Sort Product By
-module.exports.sortBy = (req, sql) => {
-    const sortBy = req.query.sortby;
-    const orderBy = req.query.orderby;
+module.exports.sorting = (req, sql) => {
+    let orderBy = req.query.orderBy;
+    let sortBy = req.query.sortBy;
 
-    if (sortBy == 'name') {
+    if (orderBy == 'name') {
         sql += `ORDER BY product.name `;
-    } else if (sortBy == 'category') {
+    } else if (orderBy == 'category') {
         sql += `ORDER BY category.name `;
-    } else if (sortBy == 'updated') {
+    } else if (orderBy == 'updated') {
         sql += `ORDER BY product.updated `;
     } else {
         sql += `ORDER BY product.id `;
     }
 
-    if (sortBy != null) {
-        if (orderBy == 'asc' || orderBy == null) {
+    if (orderBy != null) {
+        if (sortBy == 'ASC' || sortBy == null) {
             sql += 'ASC';
-        } else if ('desc') {
+        } else if (sortBy == 'DESC') {
             sql += 'DESC';
         }
     }
@@ -63,6 +63,8 @@ module.exports.searchProduct = (req, sql) => {
 
     if (search != null) {
         sql += ` AND product.name LIKE ? `;
+    } else {
+        sql
     }
 
     return {
