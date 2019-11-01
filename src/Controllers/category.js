@@ -45,7 +45,11 @@ const controller = {
             if (response.length == 0) {
                 categoryModel.postCategory (req)
                 .then (response => {
-                    form.success (res, 200, "Success Create New Category");
+                    categoryModel.getCategoryById (req, response.insertId)
+                    .then(response => {
+                        form.success (res, 200, response);
+                    })
+                    .catch(error => {form.error (res, 400, error)})
                 })
                 .catch (error => {
                     form.error (res, 400, error);
@@ -60,22 +64,29 @@ const controller = {
     },
     //Controller Update Category
     updateCategory: (req, res) => {
+        
+        const id = req.params.id
+        const name = req.body.name
 
         //Check If Category Empty
         if (req.body.name == null || req.body.name == "") {
             return form.error (res, 400, "Category Name Cant Be Empty");
         }
 
-        categoryModel.getCategoryById (req)
+        categoryModel.getCategoryById (req, id)
         .then(response => {
             if (response.length != 0) {
                 categoryModel.getCategoryByName (req)
                 .then(response => {
                     if (response.length == 0) {
-                        categoryModel.updateCategory (req)
-                        .then (response => {
-                            form.success (res, 200, "Success Update Category");
-                        })
+                        categoryModel.updateCategory (name, id)
+                        .then (response => res.json ({
+                            status: 200,
+                            response:{
+                                name,
+                                id
+                            }
+                        }))
                         .catch (error => {
                             form.error (res, 400, error);
                         })
@@ -95,6 +106,9 @@ const controller = {
     },
     //Controller Delete Category
     deleteCategory: (req, res) => {
+
+        const id = req.params.id;
+
         categoryModel.getCategoryById (req)
         .then(response => {
             console.log(response);
@@ -104,9 +118,10 @@ const controller = {
                     console.log(response);
                     if (response.length == 0) {
                         categoryModel.deleteCategory (req)
-                        .then (response => {
-                            form.success (res, 200, "Success Delete Category");
-                        })
+                        .then (response => res.json({
+                            status: 200,
+                            id:id
+                        }))
                         .catch (error => {
                             form.error (res, 400, error);
                         })

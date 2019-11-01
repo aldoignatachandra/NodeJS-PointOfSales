@@ -27,8 +27,8 @@ const model = {
             })
         });
     },
-    getCategoryById: req => {
-        const category_id = req.params.id || req.body.category_id;
+    getCategoryById: (req, id) => {
+        const category_id = req.params.id || req.body.category_id || id;
         const sql = 'SELECT * FROM tb_category WHERE id=?';
         
         return new Promise ((resolve, reject) => {  
@@ -84,9 +84,8 @@ const model = {
             );
         });    
     },
-    updateCategory: req => {
-        const id = req.params.id;
-        const name = req.body.name;
+    updateCategory: (name, id) => {
+
         const sql = 'UPDATE tb_category SET name=? WHERE id=?';
         
         return new Promise ((resolve, reject) => { 
