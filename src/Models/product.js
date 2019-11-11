@@ -3,9 +3,11 @@ const { getMaxPage } = require('../Helpers/feature');
 const { searchProduct } = require('../Helpers/feature');
 const { sorting } = require('../Helpers/feature');
 
+const joinTable = `SELECT product.id, category.id as category_id ,product.name as product_name, product.description, product.image,category.name as category, product.price, product.added, product.updated, product.quantity FROM tb_product as product, tb_category as category WHERE product.category_id = category.id `
+
 const model = {
     getProduct: (req, page) => {
-        let sql = `SELECT product.id, category.id as category_id ,product.name as product_name, product.description, product.image,category.name as category, product.price, product.added, product.updated, product.quantity FROM tb_product as product, tb_category as category WHERE product.category_id = category.id `;
+        let sql = joinTable;
         let query = searchProduct(req, sql);
         sql = sorting(req, query.sql);
         const paging = `${sql} LIMIT ? OFFSET ?`;
@@ -38,12 +40,12 @@ const model = {
             });
         });
     },
-    getProductById: req => {
-        const id = req.params.id;
-        const sql = 'SELECT * FROM tb_product WHERE id=?';
+    getProductById: (req, id) => {
+        const product_id = req.params.id || id;
+        const sql = joinTable + 'AND product.id=?';
 
         return new Promise ((resolve, reject) => {
-            connection.query (sql, [id],(err, response) => {
+            connection.query (sql, [product_id],(err, response) => {
                 if (!err) {
                     resolve (response)
                 } else {
@@ -54,7 +56,7 @@ const model = {
     },
     getProductByName: req => {
         const name = req.body.name;
-        const sql = 'SELECT name FROM tb_product WHERE name=?';
+        const sql = 'SELECT * FROM tb_product WHERE name=?';
 
         return new Promise ((resolve, reject) => {
             connection.query (sql, [name],(err, response) => {

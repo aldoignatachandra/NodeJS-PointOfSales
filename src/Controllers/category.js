@@ -111,11 +111,9 @@ const controller = {
 
         categoryModel.getCategoryById (req)
         .then(response => {
-            console.log(response);
             if (response.length != 0) {
                 categoryModel.checkCategoryId (req)
                 .then(response => {
-                    console.log(response);
                     if (response.length == 0) {
                         categoryModel.deleteCategory (req)
                         .then (response => res.json({

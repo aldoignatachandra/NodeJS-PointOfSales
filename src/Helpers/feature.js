@@ -2,7 +2,7 @@ const connection = require ('../Configs/connection');
 
 //Feature Pagination
 module.exports.pagination = (req) => {
-    let item = Number(req.query.item) || 10 //Default by 10; 
+    let item = Number(req.query.item) || 20 //Default by 20; 
     let page = Number(req.query.page) || 1  //Default by 1;
     let offset = item * (page - 1);
 

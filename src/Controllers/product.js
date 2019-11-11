@@ -38,7 +38,7 @@ const controller = {
     postProduct: (req, res) => {
 
         //Chek All Field
-        if (req.body.name == null || req.body.name == "") {return form.error (res, 400, "Category Name Cant Be Empty")}
+        if (req.body.name == null || req.body.name == "") {return form.error (res, 400, "Product Name Cant Be Empty")}
         if (req.body.description == null || req.body.description == "") {return form.error (res, 400, "Description Cant Be Empty")}
         if (req.body.image == null || req.body.image == "") {return form.error (res, 400, "Image Cant Be Empty")}
         if (req.body.price < 0 ) {return form.error (res, 400, "Price Cannot Down Below 0")}
@@ -52,7 +52,11 @@ const controller = {
                     if (response.length == 0) {
                         productModel.postProduct (req)
                         .then (response => {
-                            form.success (res, 200, "Success Add New Product");
+                            productModel.getProductById (req, response.insertId)
+                            .then(response => {
+                                form.success (res, 200, response);
+                            })
+                            .catch(error => {form.error (res, 400, error)})
                         })
                         .catch (error => {
                             form.error (res, 400, error);
@@ -76,7 +80,7 @@ const controller = {
     updateProduct: (req, res) => {
 
         //Chek All Field
-        if (req.body.name == null || req.body.name == "") {return form.error (res, 400, "Category Name Cant Be Empty")}
+        if (req.body.name == null || req.body.name == "") {return form.error (res, 400, "Product Name Cant Be Empty")}
         if (req.body.description == null || req.body.description == "") {return form.error (res, 400, "Description Cant Be Empty")}
         if (req.body.image == null || req.body.image == "") {return form.error (res, 400, "Image Cant Be Empty")}
         if (req.body.price < 0 ) {return form.error (res, 400, "Price Cannot Down Below 0")}
@@ -87,13 +91,19 @@ const controller = {
             if (response.length != 0) {
                 productModel.getProductByName (req)
                 .then(response => {
-                    if (response.length == 0) {
+                    if (response.length != 0 && response[0].id != Number(req.params.id)) {
+                        form.error (res, 400, "Product Name Already Exist");
+                    } else {
                         productModel.checkCategory (req)
                         .then(response => {
                             if (response.length != 0) {
                                 productModel.updateProduct (req)
                                 .then (response => {
-                                    form.success (res, 200, "Success Update Product");
+                                    productModel.getProductById (req, response.insertId)
+                                    .then(response => {
+                                        form.success (res, 200, response);
+                                    })
+                                    .catch(error => {form.error (res, 400, error)})
                                 })
                                 .catch (error => {
                                     form.error (res, 400, error);
@@ -105,8 +115,6 @@ const controller = {
                         .catch(error => {
                             form.error (res, 400, error);
                         })
-                    } else {
-                        form.error (res, 400, "Product Name Already Exist");
                     }
                 })
                 .catch(error => {
@@ -122,13 +130,17 @@ const controller = {
     },
     //Controller Delete Product By Id
     deleteProduct: (req, res) => {
+        
+        const id = req.params.id;
+
         productModel.getProductById (req)
         .then (response => {
             if (response.length > 0) {
                 productModel.deleteProduct (req)
-                .then (response => {
-                    form.success (res, 200, "Success Delete Product");
-                })
+                .then (response => res.json({
+                    status: 200,
+                    id:id
+                }))
                 .catch (error => {
                     form.error (res, 400, error);
                 })
