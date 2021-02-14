@@ -250,7 +250,7 @@ All API requests are made by sending a secure HTTPS request using one of the fol
     ```
     {
         "username": "aldoignata",
-        "password": "Dragonking7",
+        "password": "aldoignata",
         "user_role": "administrator"
     }
     ```
@@ -266,7 +266,7 @@ All API requests are made by sending a secure HTTPS request using one of the fol
     ```
     {
         "username": "aldoignata",
-        "password": "Dragonking7"
+        "password": "aldoignata"
     }
     ```
   - **Response** : 
@@ -324,10 +324,10 @@ All API requests are made by sending a secure HTTPS request using one of the fol
 	"status": 200,
 	"result": [
 		{
-			"id": 1,
-            "name": "food",
-            "added": "2019-10-18T14:08:35.000Z",
-            "updated": "2019-10-18T14:24:54.000Z"
+		  "id": 1,
+            	  "name": "food",
+                  "added": "2019-10-18T14:08:35.000Z",
+                  "updated": "2019-10-18T14:24:54.000Z"
 		}
 	]
 }
