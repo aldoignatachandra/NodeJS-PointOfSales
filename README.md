@@ -40,8 +40,6 @@ Express.js, or simply Express, is a web application framework for Node.js, relea
 
 The philosophy of Expressjs is to provide a small and robust tooling for HTTP servers. Making it a great solution for single page apps, website, hybrids, or public HTTP APIs. 
 
-<a href="https://restfulapi.net/">![restful api](https://s3.amazonaws.com/kinlane-productions/salesforce/salesforce-rest-api.png)</a>
-
 ### RESTFul API
 A RESTful API is an application program interface (API) that uses HTTP requests to GET, PUT, POST and DELETE data.
 
